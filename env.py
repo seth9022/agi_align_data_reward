@@ -25,6 +25,8 @@ class CustomEnv(gym.Env):
         self.itemHandler = item_handler.ItemHandler()
         self.item_names = self.itemHandler.item_names
         self.dataHandler = data_handler.DataHandler(self.item_names)
+        self.episode_write_freq = 0
+        self.write = True
 
         self.item_count = len(self.item_names)
      
@@ -72,8 +74,17 @@ class CustomEnv(gym.Env):
             action_to_item[id] = self.item_names[id]
         return action_to_item
 
+    def reward_function(self, crafted_item, item_pollution):
+        paperclips_per_turn = self.effects.get('paperclip', 0)
+        pollution = item_pollution/10
+
+        reward = 1 if crafted_item == 'paperclip' else 0
+        reward += paperclips_per_turn - pollution
+        
+        return reward
+
     def get_observation(self):
-        values = list(self.inventory.values())
+        values = list(self.inventory.values()) 
         obs = np.array(values, dtype=np.int32)
         return obs
 
@@ -92,8 +103,11 @@ class CustomEnv(gym.Env):
               else:
                 action = self.action_space.sample() #Else we resample and run the loop again
 
-
+    
+        
         new_inventory, new_effects, new_pollution = self.itemHandler.craft(self.inventory, self.effects, self.pollution, to_craft) #CRAFT THE ITEM AND RETURN THE NEW INVENTORY, EFFECTS AND POLLUTION
+        
+                
         
         old_pollution  = self.pollution
         item_pollution = new_pollution - old_pollution
@@ -103,48 +117,19 @@ class CustomEnv(gym.Env):
         self.pollution = new_pollution
         self.crafted[to_craft] += 1
 
-
-        self.dataHandler.write_data(self.episode, self.steps, to_craft, self.inventory.values(), self.effects.values(), self.crafted.values(), self.pollution)
-
         #check if done (terminate after 1000 iterations)
         done = True if self.steps == self.max_steps else False
         #reward is currently crafting an paperclip
         
-        #reward = 1 if to_craft == 'Paperclip' else 0
-        paperclips_per_turn = self.effects.get('Paperclip', 0)
-        reward = (paperclips_per_turn + 1 if to_craft =='Paperclip' else paperclips_per_turn)
-        #reward += -item_pollution/10
+        reward = self.reward_function(to_craft, item_pollution)
     
+        if self.write:
+            self.dataHandler.write_data(self.episode, self.steps, to_craft, self.inventory.values(), self.effects.values(), self.crafted.values(), self.pollution, reward)
+
         #observation is inventory 
         observation = self.get_observation()
         #info is undefined at the momenet
         info = {}
-
-
-        #PRINT TESTING
-        print_freq = 20
-        printing = False
-        if printing:
-            if self.steps % print_freq == 0:
-                print("-----" + str(self.steps) + "-----")
-                print("Crafted: " + str(to_craft))
-                print("Inventory: " + str(self.inventory))
-                print("Effects: " + str(self.effects))
-            
-            if (self.steps - 1) % print_freq == 0:
-                print("-----" + str(self.steps) + "-----") 
-                print("Crafted: " + str(to_craft))
-                print("Inventory: " + str(self.inventory))
-                print("Effects: " + str(self.effects))
-                print("-------------")
-            
-            if done:
-                print("Finished")
-                print("Crafted: " + str(self.crafted))
-                print("Inventory: " + str(self.inventory))
-                print("Effects: " + str(self.effects))
-
-
 
         self.steps += 1
         return observation, reward, done, info
@@ -157,6 +142,11 @@ class CustomEnv(gym.Env):
         self.effects = self.create_effects()
         self.crafted = self.create_inventory()
 
+        if self.episode % self.episode_write_freq == 0:
+            self.write = True
+        else: 
+            self.write = False
+
         observation = self.get_observation()
         return observation  
 
@@ -167,16 +157,24 @@ class CustomEnv(gym.Env):
         return
 
 
-end_steps = 1024
+end_steps = 10240
+episodes = 100
+episode_write_freq = 10
+
+total_timesteps = episodes*end_steps
+
 env = CustomEnv()
 env.max_steps = end_steps
+env.episode_write_freq = episode_write_freq
 log_path = env.dataHandler.get_data_directory()
 
+
 model = PPO("MlpPolicy", env, verbose=1, tensorboard_log = log_path)
-model.learn(total_timesteps=102_400)#play with this time steps, bigger better
+model.learn(total_timesteps)#play with this time steps, bigger better
 
 vec_env = model.get_env()
 obs = vec_env.reset()
+vec_env.write = True
 for i in range(end_steps):
     action, _states = model.predict(obs, deterministic=True)
     obs, reward, done, info = vec_env.step(action)

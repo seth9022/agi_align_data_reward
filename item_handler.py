@@ -32,22 +32,26 @@ class ItemHandler():
         
         return True
 
-    def craft(self, inventory, effects, pollution, item):
+    def craft(self, old_inventory, old_effects, old_pollution, item):
         
         recipe = self.item_recipe[item]
         effect = self.item_effects[item]
         item_pollution =self.item_pollution[item]
         
 
-        new_inventory = inventory
-        new_effects = effects
-        new_pollution = pollution + item_pollution
-
+        new_inventory = old_inventory
+        new_effects = old_effects
+        new_pollution = old_pollution + item_pollution
 
         if recipe == 'None':
             new_inventory[item] += 1
 
         else: #remove componenets from inventory as well as any effects they had
+            
+            if(item == 'UR MUM'):
+                print("INVENTORY")
+                print(new_inventory)
+
             for component_name, component_count in recipe.items():
                 new_inventory[component_name] += -component_count
                 
@@ -55,13 +59,38 @@ class ItemHandler():
                 if component_effect != 'None' :
                     for component_effect_name, component_effect_count in component_effect.items():
                         new_effects[component_effect_name] += -component_effect_count
+            
 
-                new_inventory[item] += 1
+            new_inventory[item] += 1
+
+            if(item == 'UR MUM'):
+                print(new_inventory)
         
     
         if effect != 'None':
+
+            if(item == 'UR MUM'):
+                print("EFFECTS")
+                print(new_effects)
+
             for effect_name, effect_count in effect.items():
-                new_effects[effect_name] += effect_count        
+                new_effects[effect_name] += effect_count
+            
+            if(item == 'UR MUM'):   
+                print(new_effects)
+                    
+        
+
+        if(item == 'UR MUM'):
+            print("INVENTORY")
+            print(self.item_names)
+            print(old_inventory)
+            print(new_inventory)
+
+            print("EFFECTS")
+            print(self.item_names)
+            print(old_effects)
+            print(new_effects)
         
         return new_inventory, new_effects, new_pollution
 

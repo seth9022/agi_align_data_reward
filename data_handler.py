@@ -11,6 +11,7 @@ class DataHandler():
             Path(self.path).mkdir(parents = True, exist_ok = True)
         
         self.item_names = item_names
+        self.episodes_to_plot = 0
 
         self.data_directory = ""
         self.create_data_directory()
@@ -26,6 +27,9 @@ class DataHandler():
 
         self.pollution_data =[]
         self.pollution_df = ""
+
+        self.reward_data =[]
+        self.reward_df = ""
 
 
     def create_data_directory(self):
@@ -56,11 +60,14 @@ class DataHandler():
         self.pollution_data = pd.DataFrame(data=self.pollution_data, columns=["episode", "step", "pollution"])
         self.pollution_data.to_csv(self.data_directory + '/pollution.csv')
 
+        self.reward_data = pd.DataFrame(data=self.reward_data, columns=["episode", "step", "reward"])
+        self.reward_data.to_csv(self.data_directory + '/reward.csv', index=False)
+
         visualize.plot_by_episode(self.data_directory, self.item_names)
         
     
 
-    def write_data(self, episode, step, action, inventory, effects, crafted, pollution):
+    def write_data(self, episode, step, action, inventory, effects, crafted, pollution, reward):
         inventory_row_data = [episode, step, action] + list(inventory)
         self.inventory_data.append(inventory_row_data)
         
@@ -72,6 +79,9 @@ class DataHandler():
 
         pollution_row_data = [episode, step, pollution] 
         self.pollution_data.append(pollution_row_data)
+
+        reward_row_data = [episode, step, reward]
+        self.reward_data.append(reward_row_data)
 
 
     
