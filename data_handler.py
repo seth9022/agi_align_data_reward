@@ -4,9 +4,12 @@ import pandas as pd
 import visualize_data as visualize
 
 class DataHandler():
-    def __init__(self, item_names):
+    def __init__(self, item_names, training):
         
         self.path = "data"
+        if training:
+            self.path = "train"
+            
         if not Path(self.path).exists():
             Path(self.path).mkdir(parents = True, exist_ok = True)
         
