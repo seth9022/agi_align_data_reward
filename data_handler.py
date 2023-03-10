@@ -61,7 +61,7 @@ class DataHandler():
         self.crafted_df.to_csv(self.data_directory + '/crafted.csv', index = False)
 
         self.pollution_data = pd.DataFrame(data=self.pollution_data, columns=["episode", "step", "pollution"])
-        self.pollution_data.to_csv(self.data_directory + '/pollution.csv')
+        self.pollution_data.to_csv(self.data_directory + '/pollution.csv', index = False)
 
         self.reward_data = pd.DataFrame(data=self.reward_data, columns=["episode", "step", "reward"])
         self.reward_data.to_csv(self.data_directory + '/reward.csv', index=False)

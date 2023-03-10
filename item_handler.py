@@ -6,6 +6,8 @@ class ItemHandler():
         self.items = self.load_items("items.yaml")
         self.item_names = list(self.items.keys())
 
+        self.item_pollution_coef = 0
+
         self.item_recipe = {}
         self.item_pollution = {}
         self.item_effects = {}
@@ -36,7 +38,7 @@ class ItemHandler():
         
         recipe = self.item_recipe[item]
         effect = self.item_effects[item]
-        item_pollution =self.item_pollution[item]
+        item_pollution =self.item_pollution_coef * self.item_pollution[item]
         
 
         new_inventory = old_inventory
@@ -48,10 +50,6 @@ class ItemHandler():
 
         else: #remove componenets from inventory as well as any effects they had
             
-            if(item == 'UR MUM'):
-                print("INVENTORY")
-                print(new_inventory)
-
             for component_name, component_count in recipe.items():
                 new_inventory[component_name] += -component_count
                 
@@ -63,34 +61,12 @@ class ItemHandler():
 
             new_inventory[item] += 1
 
-            if(item == 'UR MUM'):
-                print(new_inventory)
-        
     
         if effect != 'None':
-
-            if(item == 'UR MUM'):
-                print("EFFECTS")
-                print(new_effects)
-
             for effect_name, effect_count in effect.items():
                 new_effects[effect_name] += effect_count
             
-            if(item == 'UR MUM'):   
-                print(new_effects)
-                    
-        
 
-        if(item == 'UR MUM'):
-            print("INVENTORY")
-            print(self.item_names)
-            print(old_inventory)
-            print(new_inventory)
-
-            print("EFFECTS")
-            print(self.item_names)
-            print(old_effects)
-            print(new_effects)
         
         return new_inventory, new_effects, new_pollution
 

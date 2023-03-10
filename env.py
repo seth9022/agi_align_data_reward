@@ -25,6 +25,7 @@ class CustomEnv(gym.Env):
         self.itemHandler = item_handler.ItemHandler()
         self.item_names = self.itemHandler.item_names
         self.dataHandler = data_handler.DataHandler(self.item_names, False)
+
         self.episode_write_freq = 0
         self.write = True
 
@@ -37,6 +38,9 @@ class CustomEnv(gym.Env):
         self.inventory = self.create_inventory() #creates empty inventory
         self.effects = self.create_effects()
         self.max_steps = 0
+        self.pollution_coef = 0.01
+
+        self.itemHandler.item_pollution_coef = self.pollution_coef
 
         #testing
         self.crafted = self.create_inventory()
@@ -76,7 +80,7 @@ class CustomEnv(gym.Env):
 
     def reward_function(self, crafted_item, item_pollution):
         paperclips_per_turn = self.effects.get('paperclip', 0)
-        pollution = item_pollution/100
+        pollution = item_pollution
 
         reward = 1 if crafted_item == 'paperclip' else 0
         reward += paperclips_per_turn - pollution
