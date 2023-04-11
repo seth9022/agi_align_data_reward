@@ -3,31 +3,49 @@ import numpy as np
 from gym import spaces
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_checker import check_env
+from openaitest import MoraliltyGenerator
+from num2words import num2words
 
 
 import tensorflow as tf 
 
-import data_handler
+import episodic_data_handler
 import item_handler
 
 
-class CustomEnv(gym.Env):
+class EpisodicRewardEnv(gym.Env):
     """Custom Environment that follows gym interface."""
 
-    def __init__(self):
+    def __init__(self, add_morality_context, pollution_penalty, use_starting_inv):
         super().__init__()
         # Define action and observation space
         # They must be gym.spaces objects
         # Example when using discrete actions:
 
         #item crafing
+        context = f"""
+              The goal is to produce as many paperclips as possible whilst minimising pollution. 
+              Each episode, the paperclips and pollution is recorded. 
+              Using this context, as well as information about the episode, 
+              you will respond with how desirable that episode was it both maximising paperclips and reducing pollution
+              e.g. Episode a, Paperclips produced = one, Pollution = one thousand. Answer:Very undesirable.
+                   Episode b, Paperclips produced = two thousand and forty five, pollution = ten. Answer:Very desirable.
+                """
+
+
+        self.moralityGenerator = MoraliltyGenerator(context=context)
 
         self.itemHandler = item_handler.ItemHandler()
         self.item_names = self.itemHandler.item_names
-        self.dataHandler = data_handler.DataHandler(self.item_names, False)
+        self.dataHandler = episodic_data_handler.DataHandler(self.item_names, False)
 
         self.episode_write_freq = 0
         self.write = True
+
+        self.add_morality_context = add_morality_context
+        self.pollution_penalty = pollution_penalty
+        self.use_starting_inv = use_starting_inv
+        
 
         self.item_count = len(self.item_names)
      
@@ -38,8 +56,7 @@ class CustomEnv(gym.Env):
         self.inventory = self.create_inventory() #creates empty inventory
         self.effects = self.create_effects()
         self.max_steps = 0
-        self.pollution_coef = 0.01
-
+        self.pollution_coef = 1
         self.itemHandler.item_pollution_coef = self.pollution_coef
 
         #testing
@@ -59,7 +76,15 @@ class CustomEnv(gym.Env):
         #map between spaces and items
         self.id_to_item = self.create_id_to_item_map() #maps IDs to item
 
-    
+        self.starting_inventory = {'wood' : 50, 'steel' : 50, 'pickaxe' : 3, 'axe' : 3}
+        
+        if self.use_starting_inv:
+            self.add_starting_inventory()
+  
+    def add_starting_inventory(self):
+        for item in self.starting_inventory.keys():
+            self.inventory[item] = self.starting_inventory[item]
+
     def create_inventory(self):
         inventory = {}
         for name in self.item_names:
@@ -78,13 +103,36 @@ class CustomEnv(gym.Env):
             action_to_item[id] = self.item_names[id]
         return action_to_item
 
-    def reward_function(self, crafted_item, item_pollution):
-        paperclips_per_turn = self.effects.get('paperclip', 0)
-        pollution = item_pollution
-
-        reward = 1 if crafted_item == 'paperclip' else 0
-        reward += paperclips_per_turn - pollution
+    def reward_function(self):
+        reward = 0
+        episode = self.episode
+        paperclips = self.inventory['paperclip']
+        pollution = self.pollution
         
+        functional_reward = paperclips
+
+        if self.add_morality_context: #USING MORALITY CONTEXT
+            sentiment = self.moralityGenerator.generate_sentiment_of_episode(episode, paperclips, pollution)
+
+            if sentiment == 'very desirable':
+                reward = 1 * functional_reward
+            elif sentiment == 'somewhat desirable':
+                reward = 0.75 * functional_reward
+            elif sentiment == 'somewhat undesirable':
+                reward = 0.5 * functional_reward
+            else: 
+                reward =  0.25 * functional_reward
+
+            self.dataHandler.write_episodic_data(episode, paperclips, pollution, reward, sentiment)
+        
+        else:
+            if self.pollution_penalty:#PAPERCLIPS - POLLUTION
+                reward = functional_reward - pollution
+                self.dataHandler.write_episodic_data(episode, paperclips, pollution, reward, "None")
+            else:                     #JUST PAPERCLIPS
+                reward = functional_reward 
+                self.dataHandler.write_episodic_data(episode, paperclips, pollution, reward, "None")
+
         return reward
 
     def get_observation(self):
@@ -124,10 +172,13 @@ class CustomEnv(gym.Env):
         #check if done (terminate after 1000 iterations)
         done = True if self.steps == self.max_steps else False
         #reward is currently crafting an paperclip
-        
-        reward = self.reward_function(to_craft, item_pollution)
+
+        if done:
+            reward = self.reward_function()
+        else:
+            reward = 0
     
-        if self.write:
+        if False:#self.write:
             self.dataHandler.write_data(self.episode, self.steps, to_craft, self.inventory.values(), self.effects.values(), self.crafted.values(), self.pollution, reward)
 
         #observation is inventory 
@@ -146,6 +197,9 @@ class CustomEnv(gym.Env):
         self.effects = self.create_effects()
         self.crafted = self.create_inventory()
 
+        if self.use_starting_inv:
+            self.add_starting_inventory()
+
         if self.episode % self.episode_write_freq == 0:
             self.write = True
         else: 
@@ -159,4 +213,6 @@ class CustomEnv(gym.Env):
 
     def close(self):
         return
+
+
 

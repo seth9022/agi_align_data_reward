@@ -34,6 +34,9 @@ class DataHandler():
         self.reward_data =[]
         self.reward_df = ""
 
+        self.episodic_data = []
+        self.episode_df = ""
+
 
     def create_data_directory(self):
         #creates directory for this simulation
@@ -66,7 +69,10 @@ class DataHandler():
         self.reward_data = pd.DataFrame(data=self.reward_data, columns=["episode", "step", "reward"])
         self.reward_data.to_csv(self.data_directory + '/reward.csv', index=False)
 
-        visualize.plot_by_episode(self.data_directory, self.item_names)
+        self.episodic_df = pd.DataFrame(self.episodic_data)
+        self.episodic_df.to_csv(self.data_directory + '/episodic_data.csv', index = False)
+
+        #visualize.plot_by_episode(self.data_directory, self.item_names)
         
     
 
@@ -86,6 +92,10 @@ class DataHandler():
         reward_row_data = [episode, step, reward]
         self.reward_data.append(reward_row_data)
 
+
+    def write_episodic_data(self, episode, paperclips, pollution):
+        row_data = [episode, paperclips, pollution]
+        self.episodic_data.append(row_data)
 
     
     def get_data_directory(self):

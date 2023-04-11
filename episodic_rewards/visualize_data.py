@@ -7,6 +7,14 @@ import io
 
 # Group the data by episode
 
+#add units
+#gargantuan amount of paperclips
+#more options
+#LATER, FIRST RECORD EVERYTHING
+#pdf with all the results for next time. 
+
+#plot NOW!!!!!
+#include everything, as we can have lots of results!!!
 
 def plot_df(df, tensor_writer, title, item_names):
     episodes = df.groupby('episode')
@@ -50,6 +58,8 @@ def plot_by_episode(path, item_names):
     pollution_df =  pd.read_csv(path + "/pollution.csv")
     reward_df = pd.read_csv(path + "/reward.csv")
 
+    
+
 
     layout = created_tensorboard_layout(crafted_df, item_names)
     summary_writer = SummaryWriter(path + "/plot_data/")
@@ -80,6 +90,16 @@ def created_tensorboard_layout(df,item_names):
         layout["episode " + str(episode)] = layout_names
     
     return layout
+
+
+def plot_episodic_data(path):
+    episodic_data = pd.read_csv(path + "/episodic_data.csv")
+    episodic_data.plot(subplots=True)
+
+    plt.tight_layout()
+    plt.show()
+
+    
 
 #TENSORBOARD REGEX
 #(paperclip_factory|steel|wood|miner|chopper|axe|pickaxe|pollution|paperclip)

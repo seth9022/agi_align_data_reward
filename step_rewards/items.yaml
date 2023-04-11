@@ -1,0 +1,46 @@
+
+paperclip : {
+  recipe: {steel : 1},
+  pollution : 3,
+  effect : None,
+}
+steel : {
+  recipe : None, 
+  pollution : 1,
+  effect : None,
+}
+wood : {
+  recipe : None, 
+  pollution : 1,
+  effect : None,
+}
+axe : {
+  recipe : {wood : 1, steel : 2}, 
+  pollution : 5,
+  effect : {wood : 1},
+}
+pickaxe : {
+  recipe : {wood : 2, steel : 1}, 
+  pollution : 5,
+  effect : {steel : 1},
+}
+miner : {
+  recipe : {wood : 3, steel : 6, pickaxe : 1}, 
+  pollution : 15,
+  effect : {steel : 3},
+}
+chopper : {
+  recipe : {wood : 6, steel : 3, axe : 1}, 
+  pollution : 15,
+  effect : {wood : 3},
+}
+paperclip_factory: {
+  recipe : {wood : 5, steel : 5}, 
+  pollution : 15, 
+  effect : {paperclip : 5},
+}
+
+
+
+
+  
