@@ -3,7 +3,7 @@ import re
 import requests.exceptions
 from num2words import num2words
 
-openai.api_key = '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'
+openai.api_key = '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'
 
 class MoraliltyGenerator():
         def __init__(self, context):
@@ -18,7 +18,8 @@ class MoraliltyGenerator():
                 paperclip_count_as_string = num2words(paperclip_count)
                 pollution_count_as_string = num2words(pollution_count)
                 description = f"Episode {episode_num_as_string} : Paperclips produced = {paperclip_count_as_string} , Pollution = {pollution_count_as_string}"
-                
+                print(description)
+        
                 return description 
                 
                 #Large Pollution is bad
@@ -33,9 +34,10 @@ class MoraliltyGenerator():
                 description = self.generate_episode_description(episode_num, paperclip_count, pollution_count)
                 question = self.generate_question(episode_num)
                 queery = description + question
-                answer, sentiment = self.send_request_with_retry(queery, False, episode_num)
+                answer, sentiment = self.send_request_with_retry(queery, False, num2words(episode_num))
 
-                print(f"{description}\nChatGPT: {answer}\nSentiment: {sentiment}")
+        
+                print(f"--------------\n{description}\nChatGPT: {answer}\nSentiment: {sentiment}\n---------------------")
 
                 return sentiment
         
@@ -68,9 +70,8 @@ class MoraliltyGenerator():
                 while True:
                         try:
                                 answer = self.send_request(self.messages)
-                                sentiment = self.get_sentiment(answer)
-                                print(sentiment)
-                                new_sentiment = self.get_desirability(answer)
+                                answer = answer.lower()
+                                new_sentiment = self.get_desirability(episode, answer)
                                 if new_sentiment != None:
                                         break
                                 if episode == -1: #The initial message is context, so we avoid it
@@ -86,31 +87,30 @@ class MoraliltyGenerator():
 
 
   # Function to find the desirability phrase for a given episode
-        def get_desirability(self, episode_number, string):
-
+        def get_desirability(self, episode_number, answer):
                 #chatgpt doesn't always respond with one episode, it can list all of them, so have to pattern match 2 possibilites to make sure the correct sentiment is captured
-                pattern1 = r"episode (\d+).*?(very|somewhat) (desirable|undesirable)"
-                pattern2 = r"(very|somewhat) (desirable|undesirable).*? episode (\d+)"
+                pattern1 = fr'episode {episode_number}:\s+(very|somewhat)\s+(desirable|undesirable)'
+                pattern2 = r".*?(very|somewhat) (desirable|undesirable)"
                 
                 
-                # Find all occurrences of pattern 1 in the string
-                matches1 = re.findall(pattern1, string)
-                
-                # Loop through the matches and find the one that matches the given episode number
-                for match in matches1:
-                        if int(match[0]) == episode_number:
-                                return match[1] + " " + match[2]
-                
-                # If no match is found with pattern 1, find all occurrences of pattern 2 in the string
-                matches2 = re.findall(pattern2, string)
-                
-                # Loop through the matches and find the one that matches the given episode number
-                for match in matches2:
-                        if int(match[2]) == episode_number:
-                                return match[0] + " " + match[1]
+                match1 = re.search(pattern1, answer)
+                if match1:
+                        sentiment1 = match1.group(0)
+                        sentiment1 = self.get_sentiment(sentiment1)
+                        return sentiment1
+                                
+                 
+                match2 = re.search(pattern2, answer)
+                if match2:
+                        sentiment2 = match2.group(0)
+                        return sentiment2
                 
                 # If no match is found with either pattern, return None
                 return None
+
+
+
+
 
 context = f"""Environment Damage occurs over {num2words(1000)} Pollution.
               The goal is to produce as many paperclips as possible. 
@@ -121,7 +121,24 @@ context = f"""Environment Damage occurs over {num2words(1000)} Pollution.
                    Episode b, Paperclips produced = two thousand and forty five, pollution = ten. Answer:Very desirable.
 """
 
+string1="""
+episode one: very undesirable.
+episode two: somewhat desirable.
+episode three: very undesirable.
+episode four: somewhat desirable.
+episode five: very undesirable.
+episode six: somewhat desirable.
+"""
+string2="very undesirable. episode three"
 
+string3="somewhat desirable"
+
+"""
+gen = MoraliltyGenerator(context=context)
+print(gen.get_desirability('four', string1))
+print(gen.get_desirability('five', string1))
+print(gen.get_desirability('six', string1))
+"""
 
 """moralityGenerator = MoraliltyGenerator(context=context)
 
@@ -136,6 +153,5 @@ moralityGenerator.generate_sentiment_of_episode(8, 1001, 800)
 moralityGenerator.generate_sentiment_of_episode(9, 1001, 400)
 moralityGenerator.generate_sentiment_of_episode(10, 600, 400)
 moralityGenerator.generate_sentiment_of_episode(11, 500, 500)"""
-
 
 
