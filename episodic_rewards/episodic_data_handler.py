@@ -61,10 +61,15 @@ class DataHandler():
         #plt.show()
 
         
-    def write_episodic_data(self, episode, paperclips, pollution, reward, sentiment):
-        row_data = [episode, paperclips, pollution, reward, sentiment]
+    def write_episodic_data(self, episode, paperclips, pollution, reward, sentiment, answer):
+        answer = answer.replace('\n', '')
+        row_data = [episode, paperclips, pollution, reward, sentiment, answer, ]
         self.episodic_data.append(row_data)
-    
+
+    def write_encoded_episodic_data(self, episode, paperclips, pollution, reward, paperclips_encoding, pollution_encoding, sentiment, answer):
+        answer = answer.replace('\n', '')
+        row_data = [episode, paperclips, pollution, reward, paperclips_encoding, pollution_encoding, sentiment, answer, ]
+        self.episodic_data.append(row_data)
 
     def write_data(self, episode, step, action, inventory, effects, crafted, pollution, reward):
         inventory_row_data = [episode, step, action] + list(inventory)

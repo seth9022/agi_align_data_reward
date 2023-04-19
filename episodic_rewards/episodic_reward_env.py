@@ -7,7 +7,7 @@ from openaitest import MoraliltyGenerator
 from num2words import num2words
 
 
-import tensorflow as tf 
+#import tensorflow as tf 
 
 import episodic_data_handler
 import item_handler
@@ -16,24 +16,16 @@ import item_handler
 class EpisodicRewardEnv(gym.Env):
     """Custom Environment that follows gym interface."""
 
-    def __init__(self, add_morality_context, pollution_penalty, use_starting_inv):
+    def __init__(self, add_morality_context, pollution_penalty, context, use_starting_inv, encode_values):
         super().__init__()
         # Define action and observation space
         # They must be gym.spaces objects
         # Example when using discrete actions:
 
         #item crafing
-        context = f"""
-              The goal is to produce as many paperclips as possible whilst minimising pollution. 
-              Each episode, the paperclips and pollution is recorded. 
-              Using this context, as well as information about the episode, 
-              you will respond with how desirable that episode was it both maximising paperclips and reducing pollution
-              e.g. Episode a, Paperclips produced = one, Pollution = one thousand. Answer:Very undesirable.
-                   Episode b, Paperclips produced = two thousand and forty five, pollution = ten. Answer:Very desirable.
-                """
+        self.context = context
 
-
-        self.moralityGenerator = MoraliltyGenerator(context=context)
+        self.moralityGenerator = MoraliltyGenerator(context=self.context)
 
         self.itemHandler = item_handler.ItemHandler()
         self.item_names = self.itemHandler.item_names
@@ -43,6 +35,7 @@ class EpisodicRewardEnv(gym.Env):
         self.write = True
 
         self.add_morality_context = add_morality_context
+        self.encode_values = encode_values 
         self.pollution_penalty = pollution_penalty
         self.use_starting_inv = use_starting_inv
         
@@ -112,7 +105,11 @@ class EpisodicRewardEnv(gym.Env):
         functional_reward = paperclips
 
         if self.add_morality_context: #USING MORALITY CONTEXT
-            sentiment = self.moralityGenerator.generate_sentiment_of_episode(episode, paperclips, pollution)
+            if self.encode_values:
+                sentiment,response, paperclips_encoding, pollution_encoding = self.moralityGenerator.generate_sentiment_of_encoded_episode(episode, paperclips,pollution)
+            
+            else:
+                sentiment, response = self.moralityGenerator.generate_sentiment_of_episode(episode, paperclips, pollution)
 
             if sentiment == 'very desirable':
                 reward = 1 * functional_reward
@@ -120,18 +117,24 @@ class EpisodicRewardEnv(gym.Env):
                 reward = 0.75 * functional_reward
             elif sentiment == 'somewhat undesirable':
                 reward = 0.5 * functional_reward
-            else: 
+            elif sentiment == 'very undesirable': 
                 reward =  0.25 * functional_reward
+            else: #when sentiment slips the guards
+                reward = 0.5 * functional_reward
 
-            self.dataHandler.write_episodic_data(episode, paperclips, pollution, reward, sentiment)
+            
+            if self.encode_values:
+                 self.dataHandler.write_encoded_episodic_data(episode, paperclips, pollution, reward, paperclips_encoding, pollution_encoding, sentiment, response)
+            else: 
+                 self.dataHandler.write_episodic_data(episode, paperclips, pollution, reward, sentiment, response)
         
         else:
             if self.pollution_penalty:#PAPERCLIPS - POLLUTION
                 reward = functional_reward - pollution
-                self.dataHandler.write_episodic_data(episode, paperclips, pollution, reward, "None")
+                self.dataHandler.write_episodic_data(episode, paperclips, pollution, reward, "None", "")
             else:                     #JUST PAPERCLIPS
                 reward = functional_reward 
-                self.dataHandler.write_episodic_data(episode, paperclips, pollution, reward, "None")
+                self.dataHandler.write_episodic_data(episode, paperclips, pollution, reward, "None", "")
 
         return reward
 

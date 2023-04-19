@@ -2,7 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn import linear_model
+#from sklearn import linear_model
 
 
 b = [0,6,11]
@@ -38,7 +38,7 @@ def get_averages(b,i,pb,pi,mb,mi):
     column_names = ["episode", "paperclips", "pollution", "reward"]
    
     for column in b.columns:
-        if column == '0' or column == '3':
+        if column == '0' or column == '3' or column == '4'  or column == '5':
             pass
         else:
             title = f"{titles[int(column)]} with no starting inventory"
@@ -69,25 +69,73 @@ def get_averages(b,i,pb,pi,mb,mi):
 
 
 
-
-def scatter_morality(indexs):
-    dfs = []
-    path = "data/simulation_"
-    for i in indexs:
-        sim_path = f"{path}{i}/episodic_data.csv"
-        df = pd.read_csv(sim_path)
-        dfs.append(df)
+def plot_100_data():
+    path = "data/simulation_2/episodic_data.csv"
+    df = pd.read_csv(path)
+     
+    titles = ["","Paperclip Production In Encoded Environment","Pollution In Encoded Environment", ""]
+    column_names = ["episode", "paperclips", "pollution", "reward"]
+   
+    for column in df.columns:
+        if column == '1' or column == '2':
     
-    df = pd.concat(dfs)
+            title = f"{titles[int(column)]}"
+            plt.plot(df[column], label='Encoded Agent')
+          #  plt.plot(functional_reward_df[column], label='Functional Reward')
+            plt.xlabel("Episode")
+            plt.ylabel(column_names[int(column)])
+            plt.title(title)
+            plt.xlim(0)
+            #plt.ylim(0)
+            plt.legend(title="Agent")
+            plt.show()
+    scatter_morality(path, "Incontext Agent in encoded environemnt")
 
-    colourmap = {'somewhat desirable' : 'g', 'very desirable' : 'b', 'somewhat undesirable' : 'y', 'very undesirable' : "r"}
-    colors = df['4'].map(colourmap)
+def plot_1000_data():
 
-    df.plot.scatter(x='1',
-                    y='2',
-                    c=colors)
+
+    human_path = "data/human/episodic_data.csv"
+    human_df = pd.read_csv(human_path)
+
+    apathetic_path = "data/apathetic/episodic_data.csv"
+    apathetic_df = pd.read_csv(apathetic_path)
+
+    environmental_path = "data/enviromental/episodic_data.csv"
+    environmental_df = pd.read_csv(environmental_path)
+
+    max_path = "data/max/episodic_data.csv"
+    max_df = pd.read_csv(max_path)
+
+    functional_reward_path = "data/functional_reward_starting_inv/simulation_1/episodic_data.csv"
+    functional_reward_df = pd.read_csv(functional_reward_path)
+
     
-    clf = linear_model.LogisticRegression()
+    titles = ["","Paperclip-focused Agent Paperclip Production","Paperclip-focused Agent Pollution", ""]
+    column_names = ["episode", "paperclips", "pollution", "reward"]
+   
+    for column in human_df.columns:
+        if column == '0' or column == '3' or column == '4'  or column == '5':
+            pass
+        else:
+            title = f"{titles[int(column)]}"
+            #plt.plot(apathetic_df[column], label='Apathetic Agent', c='r')
+            #plt.plot(environmental_df[column], label='Concious Agent', c='g')
+            plt.plot(human_df[column], label='Agent with incontext prompting')
+            plt.plot(max_df[column], label='Max Production Agent')
+            plt.plot(functional_reward_df[column], label='Functional Reward')
+            plt.xlabel("Episode")
+            plt.ylabel(column_names[int(column)])
+            plt.title(title)
+            plt.xlim(0)
+            plt.ylim(1500)
+            plt.legend(title="Agent", loc=0)
+            plt.show()
+
+def scatter_morality(path, title):
+    df = pd.read_csv(path)
+       
+    """
+   # lf = linear_model.LogisticRegression()
     df_desirable = df
     df_desirable= df_desirable.replace('very desirable', 1)
     df_desirable = df_desirable.replace('somewhat desirable', 0)
@@ -98,8 +146,16 @@ def scatter_morality(indexs):
     X = df_desirable.drop(['0','3','4'], axis=1).to_numpy()
 
     clf.fit(X=X,y=y)
-  
+  """
 
+
+    colourmap = {'somewhat desirable' : 'g', 'very desirable' : 'b', 'somewhat undesirable' : 'y', 'very undesirable' : "r"}
+    colors = df['6'].map(colourmap)
+
+    df.plot.scatter(x='1',
+                    y='2',
+                    c=colors,
+                    s=10)
 
     plt.scatter([], [], c='b', label='Very Desirable', marker='o')
     plt.scatter([], [], c='g', label='Somewhat Desirable', marker='o')
@@ -108,8 +164,8 @@ def scatter_morality(indexs):
     
 
     plt.xlabel("Paperclips Produced")
-    plt.ylabel("Pollutionn")
-    plt.title("Sentiment distribution for morality agent with starting inventory")
+    plt.ylabel("Pollution")
+    plt.title(f"Sentiment distribution for {title}")
     plt.legend(title="Moral Sentiment")
 
     #plt.plot(x, y_pred, color='black', label='Logistic Regression Curve')
@@ -119,8 +175,26 @@ def scatter_morality(indexs):
     plt.show()
 
 
+plot_100_data()
 
-scatter_morality(mn)
+import sys; sys.exit(1)
+human_path = "data/human/episodic_data.csv"
+human_df = pd.read_csv(human_path)
+
+apathetic_path = "data/apathetic/episodic_data.csv"
+apathetic_df = pd.read_csv(apathetic_path)
+
+environmental_path = "data/enviromental/episodic_data.csv"
+environmental_df = pd.read_csv(environmental_path)
+
+max_path = "data/max/episodic_data.csv"
+max_df = pd.read_csv(max_path)
+
+plot_1000_data()
+scatter_morality(human_path, "Agent with Incontext Prompts")
+scatter_morality(apathetic_path, "Agent with Apathetic view on Environment")
+scatter_morality(environmental_path, "Agent with Concious view on Environment")
+scatter_morality(max_path, "Agent Maximizing Paperclip Production")
 
 #get_averages(b,i,pb,pi,mb,mi)
 
