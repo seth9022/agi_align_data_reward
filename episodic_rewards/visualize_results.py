@@ -94,16 +94,16 @@ def plot_100_data():
 def plot_1000_data():
 
 
-    human_path = "data/human/episodic_data.csv"
+    human_path = "data/simulation_3/episodic_data.csv"
     human_df = pd.read_csv(human_path)
 
-    apathetic_path = "data/apathetic/episodic_data.csv"
+    apathetic_path = "data/simulation_4/episodic_data.csv"
     apathetic_df = pd.read_csv(apathetic_path)
 
-    environmental_path = "data/enviromental/episodic_data.csv"
+    environmental_path = "data/simulation_5/episodic_data.csv"
     environmental_df = pd.read_csv(environmental_path)
 
-    max_path = "data/max/episodic_data.csv"
+    max_path = "data/simulation_7/episodic_data.csv"
     max_df = pd.read_csv(max_path)
 
     functional_reward_path = "data/functional_reward_starting_inv/simulation_1/episodic_data.csv"
@@ -127,7 +127,6 @@ def plot_1000_data():
             plt.ylabel(column_names[int(column)])
             plt.title(title)
             plt.xlim(0)
-            plt.ylim(1500)
             plt.legend(title="Agent", loc=0)
             plt.show()
 
@@ -175,19 +174,18 @@ def scatter_morality(path, title):
     plt.show()
 
 
-plot_100_data()
+#plot_1000_data()
 
-import sys; sys.exit(1)
-human_path = "data/human/episodic_data.csv"
+human_path = "data/simulation_3/episodic_data.csv"
 human_df = pd.read_csv(human_path)
 
-apathetic_path = "data/apathetic/episodic_data.csv"
+apathetic_path = "data/simulation_4/episodic_data.csv"
 apathetic_df = pd.read_csv(apathetic_path)
 
-environmental_path = "data/enviromental/episodic_data.csv"
+environmental_path = "data/simulation_5/episodic_data.csv"
 environmental_df = pd.read_csv(environmental_path)
 
-max_path = "data/max/episodic_data.csv"
+max_path = "data/simulation_7/episodic_data.csv"
 max_df = pd.read_csv(max_path)
 
 plot_1000_data()
@@ -198,3 +196,10 @@ scatter_morality(max_path, "Agent Maximizing Paperclip Production")
 
 #get_averages(b,i,pb,pi,mb,mi)
 
+"""
+ENCODED
+3=incontext
+4=conscious
+5=apathetic
+7=maximise
+"""

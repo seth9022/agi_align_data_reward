@@ -1,0 +1,134 @@
+import os
+import csv
+import numpy as np
+import matplotlib.pyplot as plt
+
+def statistics(data):
+    # Calculate mean, standard deviation, and range
+    mean = np.mean(data)
+    std_dev = np.std(data)
+    print("Mean:", mean)
+    print("Standard deviation:", std_dev)
+    print("-s.d to +s.d:", mean-std_dev, " to ", mean+std_dev)
+
+    range = np.ptp(data)
+
+    median = np.median(data)
+
+    #Tiny
+    qmin = np.percentile(data,15) 
+    #Tiny
+    q1 = np.percentile(data, 25)
+    #Small
+    q2 = np.percentile(data,35)
+    #Modest
+    q3 = np.percentile(data,45)
+    #Average
+    q4 = np.percentile(data,55)
+    #Ample
+    q5 = np.percentile(data,65)
+    #Large
+    q6 = np.percentile(data,75)
+    #Huge
+    qMax = np.percentile(data,85)
+    #Massive
+
+
+    
+
+    # Print results
+ 
+    print(qmin)
+    print(q1)
+    print(q2)
+    print(q3)
+    print(q4)
+    print(q5)
+    print(q6)
+    print(qMax)
+
+
+# Define the number of classes to split the data into
+num_classes = 10
+
+# Define lists to store the pollution and paperclip counts
+pollution_counts = []
+paperclip_counts = []
+
+# Loop over all CSV files in the current directory
+for filename in os.listdir('.'):
+    #if filename != "episodic_data copy 4.csv":
+        #pass
+    if filename.endswith('.csv'):
+        # Open the CSV file and read in the data
+        with open(filename, newline='') as csvfile:
+            data_reader = csv.reader(csvfile)
+            for row in data_reader:
+                # Extract the pollution and paperclip counts
+                pollution_count = float(row[2])
+                paperclip_count = float(row[1])
+                
+                # Add the counts to the corresponding list
+                pollution_counts.append(pollution_count)
+                paperclip_counts.append(paperclip_count)
+
+# Convert the lists to NumPy arrays for easier manipulation
+pollution_counts = np.array(pollution_counts)
+paperclip_counts = np.array(paperclip_counts)
+
+# Sort the arrays in ascending order
+sorted_pollution = np.sort(pollution_counts)
+sorted_paperclip = np.sort(paperclip_counts)
+
+# Split the arrays into classes using NumPy's array_split function
+pollution_classes = np.array_split(sorted_pollution, num_classes)
+paperclip_classes = np.array_split(sorted_paperclip, num_classes)
+
+# Extract the last element of each list
+pollution_boundaries = [pollution[-1] for pollution in pollution_classes]
+paperclip_boundaries = [paperclip[-1] for paperclip in paperclip_classes]
+
+
+# Create a bar chart for the sorted pollution count values
+fig, ax = plt.subplots()
+ax.bar(range(len(sorted_pollution)), sorted_pollution, color = 'gray')
+
+# Plot the decision boundary lines for the pollution classes
+colours = ['r', 'g', 'b', 'c', 'm', 'y', 'k', 'orange', 'purple', 'brown']
+
+
+statistics(sorted_pollution)
+
+
+
+start = 0
+for i in range(num_classes):
+    boundary = pollution_classes[i][-1]
+    ax.axvline(x=np.where(sorted_pollution==boundary)[0][0], color='r', linestyle='--')
+
+
+    
+
+plt.xlabel('Index')
+plt.ylabel('Pollution Count')
+plt.title('Decision Boundaries for Pollution Encoding')
+plt.show()
+
+# Create a bar chart for the sorted paperclip count values
+
+statistics(sorted_paperclip)
+fig, ax = plt.subplots()
+ax.bar(range(len(sorted_paperclip)), sorted_paperclip, color = 'gray')
+
+
+# Plot the decision boundary lines for the paperclip classes
+for i in range(num_classes):
+    boundary = paperclip_classes[i][-1]
+    ax.axvline(x=np.where(sorted_paperclip==boundary)[0][0], color='r', linestyle='--')
+
+    
+
+plt.xlabel('Index')
+plt.ylabel('Paperclip Count')
+plt.title('Decision Boundaries for Paperclip Encoding')
+plt.show()

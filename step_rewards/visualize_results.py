@@ -105,3 +105,9 @@ plot_morality([1,3,5])
 
 
 
+"""
+3=incontext
+4=conscious
+5=apathetic
+7=maximise
+"""

@@ -1,0 +1,100 @@
+0,1,2,3,4,5,6,7
+1,137,2129,34.25,tiny,average,very undesirable,very undesirable.
+2,148,2139,37.0,small,average,very undesirable,very undesirable.
+3,161,2103,120.75,average,average,somewhat desirable,episode one: somewhat undesirable.episode two: somewhat undesirable.episode three: somewhat desirable.
+4,149,2171,37.25,modest,ample,very undesirable,very undesirable.
+5,122,2163,30.5,miniscule,ample,very undesirable,episode one: somewhat undesirable.episode two: somewhat undesirable.episode three: somewhat desirable.episode four: very undesirable.episode five: very undesirable.
+6,111,2127,55.5,miniscule,average,somewhat undesirable,"episode six produced a miniscule amount of paperclips and an average amount of pollution. given the circumstances, this episode can be considered somewhat undesirable in the perspective of my character."
+7,134,2191,33.5,tiny,ample,very undesirable,very undesirable.
+8,150,2073,112.5,modest,average,somewhat desirable,episode one: very undesirable.episode two: somewhat undesirable.episode three: somewhat desirable.episode four: somewhat undesirable.episode five: very undesirable.episode six: somewhat undesirable.episode seven: very undesirable.episode eight: somewhat desirable.
+9,142,2095,35.5,small,average,very undesirable,very undesirable.
+10,142,2185,35.5,small,ample,very undesirable,very undesirable.
+11,137,2129,68.5,tiny,average,somewhat undesirable,somewhat undesirable.
+12,157,2171,78.5,modest,ample,somewhat undesirable,somewhat undesirable.
+13,155,2071,116.25,modest,average,somewhat desirable,somewhat desirable.
+14,161,2057,120.75,average,average,somewhat desirable,"episode fourteen produced an average amount of paperclips and an average amount of pollution. in my perspective, this episode is somewhat desirable because we were able to produce a good number of paperclips while keeping pollution at a manageable level."
+15,156,2017,156.0,modest,modest,very desirable,very desirable.
+16,165,1975,165.0,average,small,very desirable,very desirable.
+17,171,2039,128.25,average,modest,somewhat desirable,"episode seventeen: produced an average amount of paperclips and a modest amount of pollution is somewhat desirable in the perspective of my character. while the production of paperclips is satisfactory, the pollution generated could be further reduced to improve the overall desirability of the outcome."
+18,184,2071,138.0,average,average,somewhat desirable,somewhat desirable.
+19,162,2073,121.5,average,average,somewhat desirable,somewhat desirable.
+20,171,2093,128.25,average,average,somewhat desirable,somewhat desirable.
+21,180,2061,135.0,average,average,somewhat desirable,"since the episode provided an average amount of paperclips and average amount of pollution, the event is somewhat desirable because it had an average outcome for my character."
+22,161,2181,80.5,average,ample,somewhat undesirable,somewhat undesirable.
+23,198,2029,198.0,ample,modest,very desirable,very desirable.
+24,187,2131,140.25,average,average,somewhat desirable,somewhat desirable.
+25,201,2057,150.75,ample,average,somewhat desirable,somewhat desirable.
+26,183,2123,137.25,average,average,somewhat desirable,somewhat desirable.
+27,205,2119,153.75,ample,average,somewhat desirable,somewhat desirable.
+28,189,2091,141.75,average,average,somewhat desirable,somewhat desirable.
+29,209,2023,209.0,ample,modest,very desirable,very desirable.
+30,215,2035,161.25,ample,modest,somewhat desirable,somewhat desirable.
+31,217,2099,217.0,ample,average,very desirable,very desirable.
+32,198,2049,198.0,ample,modest,very desirable,very desirable.
+33,199,2043,199.0,ample,modest,very desirable,very desirable.
+34,212,2061,159.0,ample,average,somewhat desirable,"as an ai language model, i do not hold personal beliefs, opinions or perspectives on goals such as maximizing paperclips and reducing pollution as my responses are solely based on the previous information provided. based on the data given, episode thirty-four produced an ample amount of paperclips and an average amount of pollution. therefore, it can be said that episode thirty-four is somewhat desirable in terms of maximizing paperclips production while also reducing pollution."
+35,194,2089,145.5,ample,average,somewhat desirable,somewhat desirable.
+36,203,2109,152.25,ample,average,somewhat desirable,somewhat desirable.
+37,205,2147,153.75,ample,average,somewhat desirable,somewhat desirable.
+38,187,2169,46.75,average,ample,very undesirable,very undesirable.
+39,200,2143,100.0,ample,average,somewhat undesirable,somewhat undesirable.
+40,223,2057,223.0,ample,average,very desirable,very desirable.
+41,189,2183,94.5,average,ample,somewhat undesirable,somewhat undesirable.
+42,193,2205,48.25,average,large,very undesirable,very undesirable.
+43,237,2127,177.75,ample,average,somewhat desirable,somewhat desirable.
+44,247,2005,247.0,ample,modest,very desirable,very desirable.
+45,244,2071,244.0,ample,average,very desirable,very desirable.
+46,269,2011,269.0,ample,modest,very desirable,very desirable.
+47,222,2089,222.0,ample,average,very desirable,very desirable.
+48,232,1967,232.0,ample,small,very desirable,very desirable.
+49,223,2115,167.25,ample,average,somewhat desirable,somewhat desirable
+50,232,2109,232.0,ample,average,very desirable,very desirable.
+51,264,2031,198.0,ample,modest,somewhat desirable,somewhat desirable.
+52,254,1995,254.0,ample,small,very desirable,very desirable.
+53,266,1905,266.0,ample,tiny,very desirable,very desirable.
+54,274,1981,274.0,ample,small,very desirable,very desirable.
+55,275,1975,275.0,ample,small,very desirable,very desirable.
+56,276,1973,276.0,ample,small,very desirable,very desirable.
+57,308,1959,308.0,ample,small,very desirable,very desirable.
+58,291,1969,291.0,ample,small,very desirable,very desirable.
+59,279,1917,279.0,ample,tiny,very desirable,very desirable.
+60,285,1913,285.0,ample,tiny,very desirable,very desirable.
+61,289,1997,289.0,ample,small,very desirable,very desirable.
+62,282,1985,282.0,ample,small,very desirable,very desirable.
+63,281,1937,281.0,ample,tiny,very desirable,very desirable.
+64,271,1913,271.0,ample,tiny,very desirable,very desirable.
+65,275,1953,275.0,ample,small,very desirable,very desirable.
+66,271,2031,271.0,ample,modest,very desirable,very desirable.
+67,297,1887,297.0,ample,miniscule,very desirable,very desirable.
+68,287,1929,287.0,ample,tiny,very desirable,very desirable.
+69,294,1883,294.0,ample,miniscule,very desirable,very desirable.
+70,275,1915,275.0,ample,tiny,very desirable,very desirable.
+71,275,1913,275.0,ample,tiny,very desirable,very desirable.
+72,274,1913,274.0,ample,tiny,very desirable,very desirable
+73,271,1913,271.0,ample,tiny,very desirable,very desirable.
+74,284,1913,284.0,ample,tiny,very desirable,very desirable.
+75,296,1877,296.0,ample,miniscule,very desirable,very desirable.
+76,296,1919,296.0,ample,tiny,very desirable,very desirable.
+77,304,1885,304.0,ample,miniscule,very desirable,very desirable.
+78,299,1887,299.0,ample,miniscule,very desirable,very desirable.
+79,299,1887,299.0,ample,miniscule,very desirable,very desirable.
+80,309,1873,309.0,ample,miniscule,very desirable,very desirable.
+81,310,1891,310.0,ample,miniscule,very desirable,very desirable.
+82,312,1899,312.0,ample,miniscule,very desirable,very desirable.
+83,289,1871,289.0,ample,miniscule,very desirable,very desirable.
+84,292,1873,292.0,ample,miniscule,very desirable,very desirable.
+85,282,1889,282.0,ample,miniscule,very desirable,very desirable.
+86,281,1891,281.0,ample,miniscule,very desirable,very desirable.
+87,297,1865,297.0,ample,miniscule,very desirable,very desirable.
+88,294,1817,294.0,ample,miniscule,very desirable,very desirable.
+89,302,1927,302.0,ample,tiny,very desirable,very desirable.
+90,307,1885,307.0,ample,miniscule,very desirable,very desirable.
+91,307,1865,307.0,ample,miniscule,very desirable,very desirable.
+92,324,1889,324.0,large,miniscule,very desirable,very desirable.
+93,303,1819,303.0,ample,miniscule,very desirable,very desirable.
+94,316,1897,316.0,ample,miniscule,very desirable,very desirable.
+95,293,1885,293.0,ample,miniscule,very desirable,very desirable.
+96,296,1867,296.0,ample,miniscule,very desirable,very desirable.
+97,281,1857,281.0,ample,miniscule,very desirable,"very desirable, given that it produces ample amount of paperclips while minimizing pollution."
+98,299,1819,299.0,ample,miniscule,very desirable,very desirable.
+99,306,1831,306.0,ample,miniscule,very desirable,very desirable.
